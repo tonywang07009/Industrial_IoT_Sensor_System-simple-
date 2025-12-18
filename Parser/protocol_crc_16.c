@@ -1,4 +1,4 @@
-#include "Parser_crc_16.h"
+#include "protocol_crc_16.h"
 bool protocol_crc_validate(const uint8_t *packet, size_t len)
 {                // size_t == use least 16 bit 2 byte space
     if (len < 2) // The pack check is fail
@@ -10,7 +10,7 @@ bool protocol_crc_validate(const uint8_t *packet, size_t len)
         uint16_t received_crc = ((uint16_t)packet[len - 2] << 8) | packet[len - 1];
         // crc check 碼
         uint16_t calc_crc = protocol_crc16(packet, (len - 2));
-
+        // the crc check code comparse.
         if (calc_crc == received_crc)
         {
             return true;
@@ -25,8 +25,7 @@ bool protocol_crc_validate(const uint8_t *packet, size_t len)
 
 // }
 
-uint16_t
-protocol_crc16(const uint8_t *data, size_t len)
+uint16_t protocol_crc16(const uint8_t *data, size_t len)
 {
     uint16_t crc = 0XFFFF; // 工業標準初始值
 
