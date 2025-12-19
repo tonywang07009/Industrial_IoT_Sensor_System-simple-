@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <winsock2.h> // 小端域大端序轉換
-// #include<arpa/inet.h> -> for linux system
 
 #include "protocol_parser.h"
 #include "protocol_crc_16.h"
@@ -9,8 +7,8 @@
 ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *output)
 {
     /*Package buffer to small*/
-    if (!input || !output || !len < sizeof(Packet_t)) //! input == (input== NULL) != Ture -> False ,False->True
-    {                                                 // ! input output 防止沒有指向任何記憶體
+    if (!input || !output || len < sizeof(Packet_t)) //! input == (input== NULL) != Ture -> False ,False->True
+    {                                                // ! input output 防止沒有指向任何記憶體
         return PARSER_BUFFER_TO_SHORT;
         // pack to short.
     }
@@ -35,7 +33,7 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     }
 
     // 4. clear output menmory space
-    memset(output, 0, sizeof(Packet_t)); // int* i == 0;
+    memset(output, 0, sizeof(*output)); // int* i == 0;
 
     output->meachine_id = ntohl(package->header.machine_id); // Big end to transformer small end.
                                                              // -> 32bit , need the data aliemnt
@@ -43,10 +41,50 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     output->seq_no = ntohs(package->header.seq_no); // short 16 bit
     output->sensor_type = package->header.sensor_type;
 
-    /*varable switsh*/
-
+    /*the body variable switsh*/
     switch (package->header.sensor_type) // sensor type-> to switch deferent information content.
     {
+    case SENSOR_TYPE_VIBRATION:
+    {                                                                    // The shake
+        const Payload_Vibration_t *vibration = &package->body.vibration; // 對資料結構中的記憶體空間取門牌
+
+        output->vibration.valid = true;
+        output->vibration.velocity_rms_x = ntohs(vibration->velocity_rms_x) / 100.0f;
+        output->vibration.velocity_rms_y = ntohs(vibration->velocity_rms_y) / 100.0f;
+        output->vibration.velocity_rms_z = ntohs(vibration->velocity_rms_z) / 100.0f;
+        output->vibration.accel_peak = ntohs(vibration->accel_peak) / 100.0f; // 瞬間加速度
+        output->vibration.status_flags = vibration->status_flags;
+
+        break;
+    }
+
+    case SENSOR_TYPE_CURRENT:
+    {
+        const Payload_Current_t *current = &package->body.current;
+
+        output->current.valid = true;
+        output->current.current_rms = ntohs(current->current_rms) / 100.0f;
+        output->current.power_watts = ntohs(current->power_watts) / 10.0f;
+        output->current.total_energy = (double)ntohl(current->total_energy);
+
+        break;
+    }
+
+    case SENSOR_TYPE_ENV:
+    {
+        /* The provide varable*/
+        const Payload_Env_t *env = &package->body.env;
+        int16_t temperature_raw = (int16_t)ntohs(*(const uint16_t *)&env->temperature);
+        uint16_t humidity_raw = ntohs(env->humidity);
+
+        output->env.valid = true;
+        output->env.temperature = temperature_raw / 100.0f;
+        output->env.humidity = humidity_raw / 100.0f;
+        output->env.illuminance_lux = (float)ntohl(env->illuminance_lux);
+
+        break;
+    }
+
     default:
         return PARSER_SENSOR_UNKNOWN;
     }

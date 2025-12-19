@@ -9,6 +9,7 @@ typedef struct package_content
     Protocol_Header_t header;
     Protocol_Body_t body;
     uint16_t checksum; // 檢測碼
+
 } Packet_t;
 
 #endif

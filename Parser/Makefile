@@ -11,9 +11,10 @@ OBJ = $(SRC:.c=.o)
 all: test_parser
 
 test_parser: $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $(OBJ) 
+    #-lws2_32 -> if you used the windows
 
 clean:
-	del /Q test_parser.exe
+	del /Q test_parser.exe *.o
 
 .PHONY: all clean

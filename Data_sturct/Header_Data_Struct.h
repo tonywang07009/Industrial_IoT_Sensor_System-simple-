@@ -31,10 +31,9 @@ typedef struct Protocol_Header
     uint8_t op_code;     // The operation
     uint8_t sensor_type; // The sensor recive payload
 
+    uint16_t seq_no; // 包的序列號
     uint32_t machine_id;
     uint32_t timestamp_sec; // unix time 時間戳
-
-    uint16_t seq_no; // 包的序列號
 
 } Protocol_Header_t; //_t :ansi encode
 

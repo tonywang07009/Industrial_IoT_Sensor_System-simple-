@@ -7,6 +7,14 @@
 #include "../Data_sturct/Package_Data_Struct.h"
 // .. ->上一個資料夾
 
+/*相容性*/
+#if defined(_WIN32) || defined(_WIN64)
+#include <winsock2.h> // 小端域大端序轉換
+// #include<arpa/inet.h> -> for linux system
+#else
+#include <arpa/inet.h> // linux
+#endif
+
 /*ANSI 顏色*/
 #define COLOR_GREEN "\033[32m"
 #define COLOR_YELLOW "\033[33m"
@@ -41,7 +49,7 @@ typedef struct Parseddata // intergration Data_sturct
         float velocity_rms_x, velocity_rms_y, velocity_rms_z; // mm/s
         float accel_peak;                                     // 加速度                                     // g
         uint8_t status_flags;                                 // The meachine status flag
-        bool valid;                                           // The sign
+        bool valid;                                           // The sign -> 驗置
 
     } vibration;
 
