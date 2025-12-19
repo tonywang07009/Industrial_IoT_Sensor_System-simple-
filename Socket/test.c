@@ -1,4 +1,4 @@
-#include "net_compatblie.h"
+#include "net_compatible.h"
 #include "protocol_socket.h"
 
 int main(void)
