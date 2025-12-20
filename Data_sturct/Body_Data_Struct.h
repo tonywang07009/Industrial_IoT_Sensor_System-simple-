@@ -40,7 +40,8 @@ typedef union PayloadDataType
     Payload_Env_t env;
 
     uint8_t raw_bytes[64];
-    // 單位 8bit , 長度 64 byte all 344bit
+    // uint 8bit , 長度 64 byte
+    // The union fix max is gave 64 byte
 } Protocol_Body_t;
 
 #pragma pack(pop) // 稽查用法

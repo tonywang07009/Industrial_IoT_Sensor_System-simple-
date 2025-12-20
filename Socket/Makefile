@@ -2,11 +2,11 @@ CC     = gcc
 CFLAGS = -Wall -Wextra -std=c11 -O3
 
 # linker need to link all .c file
+
 SRC = \
    	..\Parser\protocol_crc_16.c \
     ..\Parser\protocol_parser.c \
     protocol_socket.c \
-    test.c
 
 OBJ = $(SRC:.c=.o)
 

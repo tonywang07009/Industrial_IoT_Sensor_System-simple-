@@ -1,5 +1,6 @@
-#include "net_compatible.h"
-#include "protocol_socket.h"
+#include "..\Socket\net_compatible.h"
+#include "..\Socket\protocol_socket.h"
+#include "..\Security_AES\security.h"
 
 int main(void)
 {
@@ -11,7 +12,7 @@ int main(void)
     }
 
     net_socket_t sock;
-    if (net_connect("127.0.0.1", 9000, &sock) != 0)
+    if (net_connect("127.0.0.1", 8080, &sock) != 0)
     {
         printf("connect failed\n");
         net_cleanup();
@@ -30,6 +31,7 @@ int main(void)
 
     pkt.body.vibration.velocity_rms_x = htons(450);
     pkt.body.vibration.velocity_rms_y = htons(300);
+    pkt.body.vibration.velocity_rms_z = htons(300);
     pkt.body.vibration.accel_peak = htons(150);
     pkt.body.vibration.status_flags = 1;
 

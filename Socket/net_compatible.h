@@ -21,6 +21,7 @@ static inline void net_cleanup(void)
     WSACleanup();
 }
 #else // for linux mac
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

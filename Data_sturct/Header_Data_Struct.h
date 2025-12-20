@@ -11,8 +11,6 @@ typedef enum Sensortype // the enum sepc is all big wirte
     SENSOR_TYPE_VIBRATION = 0X01, // 振幅
     SENSOR_TYPE_CURRENT = 0X02,   // 電流
     SENSOR_TYPE_ENV = 0X03,       // 溫度
-    SENSOR_TYPE_HUMIDITY = 0X04,  // 濕度
-    SENSOR_TYPE_LIGHT = 0X05      // 光
 
 } Sensortype_t; // union code // The member specify number is can change enum role.
 

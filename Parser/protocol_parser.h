@@ -3,6 +3,7 @@
 // protocol_parser.h
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include "../Data_sturct/Package_Data_Struct.h"
 // .. ->上一個資料夾
@@ -15,7 +16,7 @@
 #include <arpa/inet.h> // linux
 #endif
 
-/*ANSI 顏色*/
+/*ANSI 顏色 研究編碼*/
 #define COLOR_GREEN "\033[32m"
 #define COLOR_YELLOW "\033[33m"
 #define COLOR_RED "\033[31m"
@@ -56,9 +57,9 @@ typedef struct Parseddata // intergration Data_sturct
     // Current 數據
     struct
     {
-        float current_rms;     // A
-        float power_watts;     // W
-        uint32_t total_energy; // Wh
+        float current_rms;        // A
+        float power_watts;        // W
+        uint32_t total_energy_wh; // Wh
         bool valid;
 
     } current;
@@ -76,6 +77,6 @@ typedef struct Parseddata // intergration Data_sturct
 
 /*API*/
 ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *output);
-void protocol_print_packet(const Packet_t *info);
+void protocol_print_packet(const ParsedData_t *data);
 
 #endif

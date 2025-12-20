@@ -65,7 +65,7 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
         output->current.valid = true;
         output->current.current_rms = ntohs(current->current_rms) / 100.0f;
         output->current.power_watts = ntohs(current->power_watts) / 10.0f;
-        output->current.total_energy = (double)ntohl(current->total_energy);
+        output->current.total_energy_wh = (double)ntohl(current->total_energy);
 
         break;
     }
@@ -90,4 +90,55 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     }
 
     return PARSER_OK;
+}
+
+void protocol_print_packet(const ParsedData_t *data) // The print implemnt
+{
+    if (!data)
+    {
+        return;
+    }
+
+    printf("Machine ID : %u\n", data->meachine_id);
+    printf("Timestamp  : %u\n", data->timestamp_sec);
+    printf("Seq        : %u\n", data->seq_no);
+
+    // The data transformer.
+    Sensortype_t sensor_type = (Sensortype_t *)data->sensor_type;
+
+    switch (sensor_type)
+    {
+    case SENSOR_TYPE_VIBRATION:
+        if (data->vibration.valid)
+        {
+            printf("[VIBRATION] vel X : %.2f mm/s\n", data->vibration.velocity_rms_x);
+            printf("[VIBRATION] vel Y : %.2f mm/s\n", data->vibration.velocity_rms_y);
+            printf("[VIBRATION] vel Z : %.2f mm/s\n", data->vibration.velocity_rms_z);
+            printf("[VIBRATION] accel : %.2f g\n", data->vibration.accel_peak);
+            printf("[VIBRATION] flags : 0x%02X\n", data->vibration.status_flags);
+        }
+        break;
+
+    case SENSOR_TYPE_CURRENT:
+        if (data->current.valid)
+        {
+            printf("[CURRENT] I_rms : %.2f A\n", data->current.current_rms);
+            printf("[CURRENT] P     : %.2f W\n", data->current.power_watts);
+            printf("[CURRENT] E     : %.3f Wh\n", data->current.total_energy_wh);
+        }
+        break;
+
+    case SENSOR_TYPE_ENV:
+        if (data->env.valid)
+        {
+            printf("[ENV] Temp  : %.2f °C\n", data->env.temperature);
+            printf("[ENV] RH    : %.2f %%\n", data->env.humidity);
+            printf("[ENV] Lux   : %.2f lx\n", data->env.illuminance_lux);
+        }
+        break;
+
+    default:
+        printf("[UNKNOWN SENSOR TYPE]\n");
+        break;
+    }
 }

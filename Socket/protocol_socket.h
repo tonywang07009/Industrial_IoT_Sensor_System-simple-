@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "net_compatible.h"
+#include "../Security_AES/security.h"
 #include "../Data_sturct/Package_Data_Struct.h"
 #include "../Parser/protocol_parser.h"
 #include "../Parser/protocol_crc_16.h"

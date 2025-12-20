@@ -1,0 +1,50 @@
+meachine_id VU 修正
+
+The display uint
+
+The code clean check
+
+need build the windows and linux make
+
+cflag open debug log
+
+#--The muilte make
+
+# 通訊相關
+NET_SRC = \
+    ..\Socket\protocol_socket.c
+
+# 顯示 / UI
+DISPLAY_SRC = \
+    ..\Socket\protocol_display.c
+
+# 協議與解析
+PROTO_SRC = \
+    ..\Parser\protocol_crc_16.c \
+    ..\Parser\protocol_parser.c
+
+COMMON_SRC = $(NET_SRC) $(DISPLAY_SRC) $(PROTO_SRC)
+COMMON_OBJ = $(COMMON_SRC:.c=.o)
+
+CLIENT_SRC = client_test.c
+SERVER_SRC = server_test.c
+
+CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
+SERVER_OBJ = $(SERVER_SRC:.c=.o)
+
+all: client_test.exe server_test.exe
+
+client_test.exe: $(COMMON_OBJ) $(CLIENT_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^ -lws2_32
+
+server_test.exe: $(COMMON_OBJ) $(SERVER_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^ -lws2_32
+
+
+#取名統一化 重新化 簡易化 
+#clean code 導入
+make file 研究 (分散)
+
+將每個程式進行區塊化,也就是對程式上面新增註解
+
+寫.o 檔集合
