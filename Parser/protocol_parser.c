@@ -6,9 +6,11 @@
 
 ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *output)
 {
+
     /*Package buffer to small*/
     if (!input || !output || len < sizeof(Packet_t)) //! input == (input== NULL) != Ture -> False ,False->True
-    {                                                // ! input output 防止沒有指向任何記憶體
+    {
+
         return PARSER_BUFFER_TO_SHORT;
         // pack to short.
     }
@@ -18,12 +20,12 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     // 將uint8_t 的資料格式轉成 Packet_t
 
     // 2. CRC vailation
-    if (!protocol_crc_validate(input, len)) // The package content, and long
+    // if (!protocol_crc_validate(input, len)) // The package content, and long
 
-    {
-        return PARSER_CRC_FAIL; // CRC check fail
-                                // The CRC calculation inspection
-    }
+    // {
+    //     return PARSER_CRC_FAIL; // CRC check fail
+    //                             // The CRC calculation inspection
+    // }
 
     // 3. version checek
     if (package->header.version != 1)
@@ -104,7 +106,7 @@ void protocol_print_packet(const ParsedData_t *data) // The print implemnt
     printf("Seq        : %u\n", data->seq_no);
 
     // The data transformer.
-    Sensortype_t sensor_type = (Sensortype_t *)data->sensor_type;
+    Sensortype_t sensor_type = (Sensortype_t)data->sensor_type;
 
     switch (sensor_type)
     {
@@ -124,7 +126,7 @@ void protocol_print_packet(const ParsedData_t *data) // The print implemnt
         {
             printf("[CURRENT] I_rms : %.2f A\n", data->current.current_rms);
             printf("[CURRENT] P     : %.2f W\n", data->current.power_watts);
-            printf("[CURRENT] E     : %.3f Wh\n", data->current.total_energy_wh);
+            printf("[CURRENT] E     : %.3d Wh\n", data->current.total_energy_wh);
         }
         break;
 

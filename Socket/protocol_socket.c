@@ -43,6 +43,8 @@ int net_connect(const char *ip, uint16_t port, net_socket_t *out_sock)
 
 int proto_send_packet(net_socket_t sock, const Packet_t *package) // client_send
 {
+    printf("parser side sizeof(Packet_t) = %zu\n", sizeof(Packet_t));
+
     if (!package) // if the package is equal NULL
     {
         return -1;
@@ -54,21 +56,26 @@ int proto_send_packet(net_socket_t sock, const Packet_t *package) // client_send
     memcpy(&temp, package, sizeof(Packet_t));
 
     /* body do the AES unlock*/
-    uint8_t *body_ptr = (uint8_t *)&temp.body;
-
+    uint8_t *body_ptr = (uint8_t *)&temp.body; // 指到 bodyptr的門牌
     const uint8_t *AES_key = security_get_key();
 
-    size_t body_len = sizeof(temp.body);
+    temp.header.body_len = sizeof(temp.body);
+    size_t body_len = temp.header.body_len;
 
-    AES_result = encrypt_packet_payload(body_ptr, body_ptr, body_len, AES_key); // get the AES_KEY number
+    /*step 2 into IV*/
+    for (int i = 0; i < 16; ++i) // the array into the lock
+    {
+        temp.header.aes_iv[i] = (uint8_t)(rand() & 0XFF);
+    }
 
+    AES_result = encrypt_packet_payload(body_ptr, body_ptr, body_len, AES_key, temp.header.aes_iv); // get the AES_KEY number
     if (AES_result != 0)
     {
         return -1; // return nagative -1
     }
-
+    // need node for AES
     /* The CRC implement*/
-    uint16_t crc = protocol_crc16((const uint8_t *)&temp, sizeof(Packet_t) - sizeof(uint16_t));
+    uint16_t crc = protocol_crc16((const uint8_t *)&temp, (sizeof(Packet_t) - sizeof(uint16_t)));
     temp.checksum = htons(crc); // this need note
 
     /*Send the package*/
@@ -93,6 +100,8 @@ int proto_send_packet(net_socket_t sock, const Packet_t *package) // client_send
 
 int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms) // The server recive package do it
 {
+    printf("recv side sizeof(Packet_t) = %zu\n", sizeof(Packet_t));
+
     if (!output) // don't gave the menery space expect handle.
     {
         return -1;
@@ -143,10 +152,11 @@ int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms
     }
 
     /*The AES decode body*/
-    uint8_t *body_ptr = (uint8_t *)&packt->body; // &packe->body 對該資料空間取址  **-> need transformer the meaning lanuge.
-    size_t body_len = sizeof(packt->body);       // 這邊就是要解密 body
+    size_t body_len = packt->header.body_len;    // 這邊就是要解密 body
+    uint8_t *body_ptr = (uint8_t *)&packt->body; // The uint8_t * is used for pointer content
+                                                 //  The nomraize is used (uint8_t) can do
 
-    int aes_decrypt_result = aes_decrypt(body_ptr, body_ptr, body_len, AES_key); // The decrypt;
+    int aes_decrypt_result = aes_decrypt(body_ptr, body_ptr, body_len, AES_key, packt->header.aes_iv); // The decrypt;
 
     if (aes_decrypt_result != 0)
     {
@@ -154,12 +164,31 @@ int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms
         return -1;
     }
 
-    /* The parser handle process*/
+    /* The parser handle process sock*/
     ParserResult_t result = parse_protocol(buf, sizeof(Packet_t), output);
     if (result != PARSER_OK)
     {
         printf("parse_protocol error: %d\n", result);
+        if (result == PARSER_BUFFER_TO_SHORT)
+            printf("  -> BUFFER_TO_SHORT\n");
+        if (result == PARSER_CRC_FAIL)
+            printf("  -> CRC_FAIL\n");
+        if (result == PARSER_VERSION_ERROR)
+            printf("  -> VERSION_ERROR\n");
+        if (result == PARSER_SENSOR_UNKNOWN)
+            printf("  -> SENSOR_UNKNOWN\n");
         return -1;
     }
     return 0;
 }
+
+/*The program flow*/
+/*
+clinet
+    first encode AES -> CRC Caluater
+
+server
+    CRC inspection -> decode AES
+
+
+*/

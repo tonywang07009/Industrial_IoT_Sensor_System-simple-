@@ -8,9 +8,9 @@
 /*The Sensortype*/
 typedef enum Sensortype // the enum sepc is all big wirte
 {
-    SENSOR_TYPE_VIBRATION = 0X01, // 振幅
-    SENSOR_TYPE_CURRENT = 0X02,   // 電流
-    SENSOR_TYPE_ENV = 0X03,       // 溫度
+    SENSOR_TYPE_VIBRATION = 0X01, // vibration
+    SENSOR_TYPE_CURRENT = 0X02,   // current
+    SENSOR_TYPE_ENV = 0X03,       // envinorment
 
 } Sensortype_t; // union code // The member specify number is can change enum role.
 
@@ -28,9 +28,10 @@ typedef struct Protocol_Header
     uint8_t version;     // The package version
     uint8_t op_code;     // The operation
     uint8_t sensor_type; // The sensor recive payload
-
-    uint16_t seq_no; // 包的序列號
-    uint32_t machine_id;
+    uint8_t aes_iv[16];  // The aes_check
+    uint16_t body_len;   // body len
+    uint16_t seq_no;     // seq_no
+    uint32_t meachine_id;
     uint32_t timestamp_sec; // unix time 時間戳
 
 } Protocol_Header_t; //_t :ansi encode

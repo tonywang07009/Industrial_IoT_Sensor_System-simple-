@@ -1,62 +1,61 @@
 #include "security.h"
 #include <string.h>
 
-static const uint8_t sbox[256] = {
+static const uint8_t AES_KEY[AES_KEY_SIZE] = {
     0x00, 0x01, 0x02, 0x03,
     0x04, 0x05, 0x06, 0x07,
     0x08, 0x09, 0x0A, 0x0B,
-    0x0C, 0x0D, 0x0E, 0x0F
-    // ... 完整 S-Box 略 ...
-};
+    0x0C, 0x0D, 0x0E, 0x0F};
 
-/* The AES KEY Table*/
 const uint8_t *security_get_key(void)
 {
-    return sbox;
+    return AES_KEY;
 }
 
-/**
- * @brief AES 核心：SubBytes 步驟
- */
-static void sub_bytes(uint8_t *state)
-{
-    for (int i = 0; i < 16; i++)
-        state[i] = sbox[state[i]];
-}
+/* 之後你可以在這裡加真正 AES-128 的實作 */
 
-/**
- * @brief AES 核心：ShiftRows 步驟
- */
-static void shift_rows(uint8_t *state)
+int encrypt_packet_payload(const uint8_t *plain,
+                           uint8_t *cipher, // this way parmeter need note
+                           size_t len,
+                           const uint8_t *key,
+                           const uint8_t iv[16])
 {
-    uint8_t tmp;
-    // Row 1
-    tmp = state[1];
-    state[1] = state[5];
-    state[5] = state[9];
-    state[9] = state[13];
-    state[13] = tmp;
-    // Row 2, 3 ...
-}
 
-/**
- * @brief 封裝好的加密介面
- * 用於加密 Packet_t 的 body 部分
- */
-int encrypt_packet_payload(const uint8_t *plain, uint8_t *cipher, size_t len, const uint8_t *key)
-{
-    // 1. 進行 Padding (PKCS7)
-    // 2. 輪密鑰加 (AddRoundKey)
-    // 3. 疊代執行 SubBytes, ShiftRows, MixColumns
-    // 這裡調用底層 AES 運算
-    if (len % 16 != 0)
-        return -1; // AES 區塊大小限制
-
-    // 示範性加密流程
-    memcpy(cipher, plain, len);
-    for (size_t i = 0; i < len; i += 16)
+    if (!plain || !cipher || !key)
     {
-        // aes_encrypt_block(&cipher[i], key);
+        return -1;
     }
+    if (len % AES_BLOCK_SIZE != 0)
+    {
+        return -1;
+    }
+    /* 暫時：不做真正加密，只複製（保持介面正確） */
+
+    struct AES_ctx ctx; // The annoucument varable.
+    memcpy(cipher, plain, len);
+    AES_init_ctx_iv(&ctx, key, iv);
+    AES_CBC_encrypt_buffer(&ctx, cipher, len); // The real encoding
+
+    return 0;
+}
+
+int aes_decrypt(const uint8_t *cipher_text,
+                uint8_t *plain_text,
+                size_t len,
+                const uint8_t *key,
+                const uint8_t iv[16])
+{
+    if (!cipher_text || !plain_text || !key)
+    {
+        return -1;
+    }
+    if (len % AES_BLOCK_SIZE != 0)
+    {
+        return -1;
+    }
+    struct AES_ctx ctx;
+    memcpy(plain_text, cipher_text, len);
+    AES_init_ctx_iv(&ctx, key, iv);                // set the infunction ctx need information
+    AES_CBC_decrypt_buffer(&ctx, plain_text, len); // The decode
     return 0;
 }

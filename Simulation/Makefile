@@ -3,8 +3,10 @@ CFLAGS = -Wall -Wextra -std=c11 -O3
 
 # linker need to link all .c file
 # Common 
-SECURITY_SRC = ..\Security_AES\AES.c
+SECURITY_SRC = ..\Security_AES\AES.c \
+				..\Security_AES\tiny-AES-c\aes.c
 
+STATISTICS_SRC = ..\Statistics_tool\statistics.c
 
 COMMON_SRC = \
    	..\Socket\protocol_display.c \
@@ -12,13 +14,14 @@ COMMON_SRC = \
 	..\Parser\protocol_crc_16.c	\
 	..\Parser\protocol_parser.c	\
 
-# The So commin
+# The So commin the define need check
 SECURITY_OBJ = $(SECURITY_SRC:.c=.o)
+STATISTICS_OBJ = $(STATISTICS_SRC:.c=.o)
 COMMON_OBJ = $(COMMON_SRC:.c=.o)
 
 #The OBJ combine
 
-ALL_COMMON_OBJ = $(SECURITY_OBJ) $(COMMON_OBJ)
+ALL_COMMON_OBJ = $(SECURITY_OBJ) $(COMMON_OBJ) $(STATISTICS_OBJ)
 
 
 # Individual programs
