@@ -5,7 +5,7 @@
 By identifying bottlenecks with low availability or long cycle times, the system applies Industrial Engineering Line Balancing techniques. 
 It recommends machine adjustments to optimize utilization rates and balance Takt time effectively.
 
-### Protocol & Safety1
+### Protocol & Safety
 1. Package formate:
     - Header:
         1. version: The package version
@@ -16,5 +16,6 @@ It recommends machine adjustments to optimize utilization rates and balance Takt
         6. seq_no : The package Sequence
         7. meachine_id: Now meachine_number 
         8. timestamp_sec: unix timestmep
+    -
 
         

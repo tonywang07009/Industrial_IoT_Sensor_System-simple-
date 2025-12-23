@@ -19,7 +19,7 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     const Packet_t *package = (const Packet_t *)input;
     // 將uint8_t 的資料格式轉成 Packet_t
 
-    // 2. CRC vailation
+    // 2. CRC vailation // 這邊已經 proto_recv_and_parse 這個函式算過一次,若這邊再算一次就會出bug
     // if (!protocol_crc_validate(input, len)) // The package content, and long
 
     // {
@@ -37,8 +37,8 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     // 4. clear output menmory space
     memset(output, 0, sizeof(*output)); // int* i == 0;
 
-    output->meachine_id = ntohl(package->header.machine_id); // Big end to transformer small end.
-                                                             // -> 32bit , need the data aliemnt
+    output->meachine_id = ntohl(package->header.meachine_id); // Big end to transformer small end.
+                                                              // -> 32bit , need the data aliemnt
     output->timestamp_sec = ntohl(package->header.timestamp_sec);
     output->seq_no = ntohs(package->header.seq_no); // short 16 bit
     output->sensor_type = package->header.sensor_type;
