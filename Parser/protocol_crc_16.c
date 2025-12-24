@@ -48,3 +48,5 @@ uint16_t protocol_crc16(const uint8_t *data, size_t len)
 
     return crc;
 }
+
+

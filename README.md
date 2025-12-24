@@ -18,4 +18,10 @@ It recommends machine adjustments to optimize utilization rates and balance Takt
         8. timestamp_sec: unix timestmep
     -
 
+
+### The Security_AES setting
+
+Step 1 : cd/ Security_AES
+
+Step 2 : git clone https://github.com/kokke/tiny-AES-c.git (tiny-AES-c)
         

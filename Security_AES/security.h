@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include ".\tiny-AES-c\aes.h"
+#include "./tiny-AES-c/aes.h"
 /**
  * @brief 安全模組定義
  * 包含 AES-128 加解密與 CRC-16 校驗介面

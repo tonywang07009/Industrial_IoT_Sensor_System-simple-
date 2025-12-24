@@ -1,4 +1,5 @@
 #include "statistics.h"
+
 /*The add sample */
 void stats_reset(StatAccumulator_t *acc)
 {

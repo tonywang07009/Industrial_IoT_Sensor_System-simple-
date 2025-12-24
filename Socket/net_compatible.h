@@ -23,7 +23,9 @@ static inline void net_cleanup(void)
 #else // for linux mac
 
 #include <sys/types.h>
+#include <sys/time.h> // the sys time.h for timeval
 #include <sys/socket.h>
+#include <stdlib.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>

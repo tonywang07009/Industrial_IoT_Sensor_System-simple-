@@ -54,3 +54,7 @@ make file 研究 (分散)
 aes 實作
 
 寫模擬器
+
+code review
+
+做相容性設計

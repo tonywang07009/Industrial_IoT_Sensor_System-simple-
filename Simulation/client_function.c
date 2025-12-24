@@ -1,38 +1,28 @@
-#include "..\Socket\net_compatible.h"
-#include "..\Socket\protocol_socket.h"
-#include "..\Security_AES\security.h"
+#include "client_function.h"
 
-#define SENDPACKAGE 35
-
-int main(void)
+int run_single_client_session(const char* ip ,uint16_t port, uint32_t machine_id, int send_count )
 {
-
-    if (net_init() != 0)
-    {
-        printf("net_init failed\n");
-        return 1;
-    }
-
     net_socket_t sock;
-    if (net_connect("127.0.0.1", 8080, &sock) != 0)
+
+    if (net_connect(ip, port, &sock) != 0)
     {
         printf("connect failed\n");
-        net_cleanup();
-        return 1;
+        return -1;
     }
-    printf("connect ok\n");
 
-    // The package send test
+    printf("connect ok ,will sned %d package\n",send_count);
     Packet_t pkt;
 
-    for (int i = 0; i < SENDPACKAGE; i++)
+
+
+    for (int i = 0; i < send_count ; i++)
     {
         memset(&pkt, 0, sizeof(Packet_t)); // clear
 
         pkt.header.version = 1;
         pkt.header.op_code = OPCODE_DATA_REPORT;
         pkt.header.sensor_type = SENSOR_TYPE_VIBRATION;
-        pkt.header.machine_id = htonl(12345);
+        pkt.header.meachine_id = htonl(machine_id); // 大端
         pkt.header.timestamp_sec = htonl(1734567890);
         pkt.header.seq_no = htons((uint16_t)(i + 1));
 
@@ -44,8 +34,8 @@ int main(void)
 
         if (proto_send_packet(sock, &pkt) == 0)
         {
-            printf("send %d / %d ok\n", i + 1, SENDPACKAGE);
-        }
+            printf("send %d / %d ok\n", i + 1, send_count);
+         }
         else
         {
             printf("send %d failed\n", i + 1);
@@ -54,6 +44,7 @@ int main(void)
     }
 
     net_close(sock);
-    net_cleanup();
     return 0;
+
+
 }
