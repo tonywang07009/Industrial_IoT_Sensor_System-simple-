@@ -45,16 +45,16 @@ It recommends machine adjustments to optimize utilization rates and balance Takt
 - Refer_code : Header_Data_Struct.h: Protocol_Header_t
 
 ### 3.1 Header (`Protocol_Header_t`)
-| Field | Type |  Description |
-|----------------|------------|
-|`version`| uint8_t | Protocol version |
-| `op_code`| uint8_t | Operation (`OpCode_t`)    |
-| `sensor_type`| uint8_t | Sensor type (`Sensortype_t`)    |
-| `aes_iv[16]` | uint8_t | AES-128 IV used for body        |
-| `body_len` | uint16_t | Length of encrypted body (bytes) |
-| `seq_no` | uint16_t | Per-device sequence number         |
-| `machine_id` | uint32_t | Machine identifier   |
-| `timestamp_sec`| uint32_t | Unix tim (seconds) |
+| Field          | Type     | Description                         |
+|----------------|----------|-------------------------------------|
+| `version`      | uint8_t  | Protocol version                    |
+| `op_code`      | uint8_t  | Operation (`OpCode_t`)             |
+| `sensor_type`  | uint8_t  | Sensor type (`Sensortype_t`)       |
+| `aes_iv[16]`   | uint8_t  | AES-128 IV used for body           |
+| `body_len`     | uint16_t | Length of encrypted body (bytes)   |
+| `seq_no`       | uint16_t | Per-device sequence number         |
+| `machine_id`   | uint32_t | Machine identifier                  |
+| `timestamp_sec`| uint32_t | Unix time (seconds)                |
 
 ### 3.2 Body (`Protocol_Body_t`)
 - Refer_code : Body_Data_Struct.h: Protocol_Body_t
