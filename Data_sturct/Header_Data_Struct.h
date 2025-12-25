@@ -1,12 +1,11 @@
 #ifndef __HEADER_DATA__
 #define __HEADER_DATA__
 
-#include <stdint.h>   // for 標準資料單位
-#pragma pack(push, 1) // 記憶體對齊強制
-                      // 將資料連接串起
+#include <stdint.h>
+#pragma pack(push, 1)
 
 /*The Sensortype*/
-typedef enum Sensortype // the enum sepc is all big wirte
+typedef enum Sensortype
 {
     SENSOR_TYPE_VIBRATION = 0X01, // vibration
     SENSOR_TYPE_CURRENT = 0X02,   // current
@@ -14,7 +13,7 @@ typedef enum Sensortype // the enum sepc is all big wirte
 
 } Sensortype_t; // union code // The member specify number is can change enum role.
 
-/*The operation type*/
+/*The Operation type*/
 typedef enum Operationtype
 {
     OPCODE_DATA_REPORT = 0X10,  // Report the data
@@ -29,10 +28,10 @@ typedef struct Protocol_Header
     uint8_t op_code;     // The operation
     uint8_t sensor_type; // The sensor recive payload
     uint8_t aes_iv[16];  // The aes_check
-    uint16_t body_len;   // body len
-    uint16_t seq_no;     // seq_no
-    uint32_t meachine_id;
-    uint32_t timestamp_sec; // unix time 時間戳
+    uint16_t body_len;   // length of encrypted body
+    uint16_t seq_no;     //
+    uint32_t machine_id;
+    uint32_t timestamp_sec; // unix time
 
 } Protocol_Header_t; //_t :ansi encode
 

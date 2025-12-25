@@ -4,7 +4,7 @@
 #include "Header_Data_Struct.h"
 #include "Body_Data_Struct.h"
 
-typedef struct package_content
+typedef struct Package_content
 {
     Protocol_Header_t header;
     Protocol_Body_t body;

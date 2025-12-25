@@ -7,7 +7,7 @@ void server_set_shared_stats(ServerSharedStats_t *p)
 
 int run_single_process_server(int listen_fd)
 {
-    
+
     net_socket_t client_sock = accept(listen_fd, NULL, NULL);
 
     if (client_sock == -1) // INVALID_SOCKET -> 為 socket 保留字 待研究
@@ -23,21 +23,21 @@ int run_single_process_server(int listen_fd)
 
         ParsedData_t data; // 宣告符合 protocol 的資料型態
         int result = proto_recv_and_parse(client_sock, &data, 3000);
-        if(result == EOF)
+        if (result == EOF)
         {
             break;
         }
         if (result != 0)
         {
-            uint32_t id = data.meachine_id;
+            uint32_t id = data.machine_id;
             printf("recv/parse fail , break \n");
-            printf("recv/parse fail at sample #%u, result=%d\n", 
-                    vib_stats[id].count + 1, result);
+            printf("recv/parse fail at sample #%u, result=%d\n",
+                   vib_stats[id].count + 1, result);
             break;
         }
         if (result == 0)
         {
-            if(g_stats != NULL)
+            if (g_stats != NULL)
             {
                 pthread_mutex_lock(&g_stats->lock);
                 g_stats->total_requests++;
@@ -45,7 +45,7 @@ int run_single_process_server(int listen_fd)
             }
             printf("✅ The parser sussful.\n");
             protocol_print_packet(&data);
-            uint32_t id = data.meachine_id;
+            uint32_t id = data.machine_id;
             if (id < MAX_MEACHINES)
             {
                 StatSample_t s = {                                        // 用法研究

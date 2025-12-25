@@ -1,21 +1,77 @@
-# Industrial_IoT_Sensor_System-simple-
+# Industrial_IoT_Sensor_System-simple (Simple Version)
 
-### Introduction
+## Introduction
 - This project simulates a factory's digital transformation using IoT sensors and a statistical analysis DLL. 
 By identifying bottlenecks with low availability or long cycle times, the system applies Industrial Engineering Line Balancing techniques. 
 It recommends machine adjustments to optimize utilization rates and balance Takt time effectively.
 
-### Protocol & Safety
-1. Package formate:
-    - Header:
-        1. version: The package version
-        2. op_code: The operation type
-        3. sensor_type: The sensor recive payload
-        4. aes_iv[16] : The aes check
-        5. bodylen : The package content len
-        6. seq_no : The package Sequence
-        7. meachine_id: Now meachine_number 
-        8. timestamp_sec: unix timestmep
+
+
+## 1. Overview
+- Purpose: monitor machine vibration, current, and environment, and apply SPC to detect abnormal states.
+- Main modules:
+    - `Socket/`: Linux -platform socket abstraction
+    - `Parser/`: custom protocol
+    - `Security_AES/`: AES-128 encryption/decryption for packet body
+    - `Statistics_tool/`: online statistics and SPC function: Z-score
+    - `Simulation/`: multi-process server + multi-thread client for load test
+
+## 2. The system overview flow chat
+
+```mermaid
+    sequenceDiagram 
+        participant C as Client  %% 宣告兩個主要功能方塊
+        participant S as Server  
+        participant P as Parser
+        participant SPC as Statistics_tool
+        participant SEC as Security_AES
+
+        C->>S: connect()
+        C->>S: send the package_t (Socket)
+        S->>P: proto_recv_and_parsr() (Socket)
+        P->>SEC: verify CRC16 + AES decrypt body %%(Security_AES)
+        %% (crc_16,Security_AES)
+
+        SEC-->>P: status + decrypt body
+        P-->>S: ParsedData_t / status %%(protocol_parser)
+
+        S->>SPC: stats_add_sample() StatSample_t { value, machine_id, timestamp }
+        SPC-->>S: StatResult_t (Z-score, status) %% This need debug
+          
+```
+
+
+## 3. Protocol Design 
+- Refer_code : Header_Data_Struct.h: Protocol_Header_t
+
+### 3.1 Header (`Protocol_Header_t`)
+| Field | Type |  Description |
+|----------------|------------|
+|`version`| uint8_t | Protocol version |
+| `op_code`| uint8_t | Operation (`OpCode_t`)    |
+| `sensor_type`| uint8_t | Sensor type (`Sensortype_t`)    |
+| `aes_iv[16]` | uint8_t | AES-128 IV used for body        |
+| `body_len` | uint16_t | Length of encrypted body (bytes) |
+| `seq_no` | uint16_t | Per-device sequence number         |
+| `machine_id` | uint32_t | Machine identifier   |
+| `timestamp_sec`| uint32_t | Unix tim (seconds) |
+
+### 3.2 Body (`Protocol_Body_t`)
+- Refer_code : Body_Data_Struct.h: Protocol_Body_t
+
+- Vibration payload (`Payload_Vibration_t`):
+  - Units: velocity in 0.01 mm/s, accel in 0.01 g
+- Current payload (`Payload_Current_t`):
+  - Units: current in 10 mA, power in 0.1 W, energy in Wh
+- Environment payload (`Payload_Env_t`):
+  - Units: temperature in 0.01 °C, humidity in 0.01 %RH, light in Lux
+
+### 3.3 Package Content 
+
+
+
+
+
     -
 
 

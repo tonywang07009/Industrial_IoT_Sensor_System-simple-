@@ -37,8 +37,8 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     // 4. clear output menmory space
     memset(output, 0, sizeof(*output)); // int* i == 0;
 
-    output->meachine_id = ntohl(package->header.meachine_id); // Big end to transformer small end.
-                                                              // -> 32bit , need the data aliemnt
+    output->machine_id = ntohl(package->header.machine_id); // Big end to transformer small end.
+                                                            // -> 32bit , need the data aliemnt
     output->timestamp_sec = ntohl(package->header.timestamp_sec);
     output->seq_no = ntohs(package->header.seq_no); // short 16 bit
     output->sensor_type = package->header.sensor_type;
@@ -101,7 +101,7 @@ void protocol_print_packet(const ParsedData_t *data) // The print implemnt
         return;
     }
 
-    printf("Machine ID : %u\n", data->meachine_id);
+    printf("Machine ID : %u\n", data->machine_id);
     printf("Timestamp  : %u\n", data->timestamp_sec);
     printf("Seq        : %u\n", data->seq_no);
 

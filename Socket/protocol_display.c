@@ -3,7 +3,7 @@
 void print_parsed(const ParsedData_t *data)
 {
     printf("Meachine ID =%u,Time=%u,seq=%u\n",
-           data->meachine_id, data->timestamp_sec, data->seq_no);
+           data->machine_id, data->timestamp_sec, data->seq_no);
     // print data content.
 
     switch (data->sensor_type) // The switch type

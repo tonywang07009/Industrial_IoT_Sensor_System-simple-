@@ -41,7 +41,7 @@ typedef struct Parseddata // intergration Data_sturct
     uint16_t package_version; // The packeage sequence number
     uint16_t seq_no;
 
-    uint32_t meachine_id;
+    uint32_t machine_id;
     uint32_t timestamp_sec;
 
     // Vibration 數據 (單位已轉換為浮點)
