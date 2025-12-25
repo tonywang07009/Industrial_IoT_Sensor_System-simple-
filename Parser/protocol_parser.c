@@ -8,7 +8,6 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
 {
 
     /*Boundary condition setting */
-
     if (!input || !output || len < sizeof(Packet_t)) //! input == (input== NULL) != Ture -> False ,False->True
     {
         return PARSER_BUFFER_TOO_SHORT;

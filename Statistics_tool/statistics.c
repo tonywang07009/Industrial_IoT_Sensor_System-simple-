@@ -69,3 +69,16 @@ int stats_compute(const StatAccumulator_t *acc, double last_value, StatResult_t 
 
     return 0;
 }
+
+/*The Display information*/
+
+void stats_print_result(uint32_t machine_id, const StatResult_t *result)
+{
+    if (!result)
+    {
+        return;
+    }
+
+    printf("SPC: MID=%u, N=%u, mean=%.2f, stddev=%.3f, Z=%.2f\n",
+           machine_id, result->count, result->mean, result->stddev, result->z_score);
+}

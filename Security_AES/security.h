@@ -5,13 +5,15 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "./tiny-AES-c/aes.h"
+// tiny-AES-c (AES-128/192/256) [web:167]
+
 /**
  * @brief 安全模組定義
  * 包含 AES-128 加解密與 CRC-16 校驗介面
  */
 
-#define AES_BLOCK_SIZE 16 // AES 標準區塊大小 (128 bits)
-#define AES_KEY_SIZE 16   // AES-128 密鑰長度
+#define AES_BLOCK_SIZE 16 // 128-bit-block
+#define AES_KEY_SIZE 16   // AES-128 key length
 
 const uint8_t *security_get_key(void);
 /**
@@ -23,11 +25,28 @@ const uint8_t *security_get_key(void);
  * @return int        0 代表成功，-1 代表長度未對齊
  */
 
+/**
+ * Encrypt packet payload (AES-128 CBC).
+ *
+ * - plain  / cipher: buffers must have length multiple of AES_BLOCK_SIZE.
+ * - len:    payload length in bytes.
+ * - key:    16-byte AES-128 key.
+ * - iv:     16-byte IV (should match header.aes_iv).
+ *
+ * Return: 0 on success, -1 on invalid length.
+ **/
+
 int encrypt_packet_payload(const uint8_t *plain,
                            uint8_t *cipher,
                            size_t len,
                            const uint8_t *key,
                            const uint8_t iv[16]); // 16 byte iv
+
+/**
+ * Decrypt packet payload (AES-128 CBC).
+ *
+ * Parameters are symmetric with encrypt_packet_payload().
+ */
 
 int aes_decrypt(const uint8_t *cipher_text,
                 uint8_t *plain_text,
@@ -37,4 +56,4 @@ int aes_decrypt(const uint8_t *cipher_text,
 
 #endif // SECURITY_H
 
-// need research the AES Princlpe.
+/* need research the AES Princlpe. */

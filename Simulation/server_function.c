@@ -10,7 +10,7 @@ int run_single_process_server(int listen_fd)
 
     net_socket_t client_sock = accept(listen_fd, NULL, NULL);
 
-    if (client_sock == -1) // INVALID_SOCKET -> 為 socket 保留字 待研究
+    if (client_sock == -1)
     {
         perror("accept");
         return -1;
@@ -18,7 +18,7 @@ int run_single_process_server(int listen_fd)
 
     printf("The client is connet\n");
 
-    for (;;) // research code
+    for (;;) // Infiniti loop
     {
 
         ParsedData_t data; // 宣告符合 protocol 的資料型態
@@ -61,8 +61,6 @@ int run_single_process_server(int listen_fd)
                     if (static_value.count < 35)
                     {
                         printf("Need More Sample %u \n", (35 - static_value.count));
-                        printf("SPC warm-up: N=%u, mean=%.2f, stddev=%.3f,  (Z=%.2f, not used yet)\n",
-                               static_value.count, static_value.mean, static_value.stddev, static_value.z_score);
                     }
                     else
                     {
@@ -88,8 +86,7 @@ int run_single_process_server(int listen_fd)
                             status = " CRITICAL ";
                         }
 
-                        printf("SPC: N=%u, mean=%.2f, stddev=%.3f, Z=%.2f, STATUS=%s\n",
-                               static_value.count, static_value.mean, static_value.stddev, static_value.z_score, status);
+                        stats_print_result(id, &static_value);
                     }
                 }
             }

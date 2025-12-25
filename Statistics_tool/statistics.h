@@ -42,10 +42,11 @@ void stats_reset(StatAccumulator_t *acc);
 /*The add sample */
 
 void stats_add_sample(StatAccumulator_t *acc, const StatSample_t *sample);
-// The fix information is will put in last
 
 /*The statistics result dispaly*/
 
 int stats_compute(const StatAccumulator_t *acc, double last_value, StatResult_t *out);
+/*The statistics result*/
+void stats_print_result(uint32_t machine_id, const StatResult_t *result);
 
 #endif /*__STATS_H__*/

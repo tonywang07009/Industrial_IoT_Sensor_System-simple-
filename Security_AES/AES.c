@@ -12,8 +12,7 @@ const uint8_t *security_get_key(void)
     return AES_KEY;
 }
 
-/* 之後你可以在這裡加真正 AES-128 的實作 */
-
+/* AES-128 encrypt */
 int encrypt_packet_payload(const uint8_t *plain,
                            uint8_t *cipher, // this way parmeter need note
                            size_t len,
