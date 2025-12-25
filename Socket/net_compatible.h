@@ -38,7 +38,9 @@ static inline int net_init(void)
 {
     return 0;
 }
-static inline void net_cleanup(void) {}
+static inline void net_cleanup(void)
+{
+}
 
 #endif
 

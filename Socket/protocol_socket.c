@@ -169,7 +169,7 @@ int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms
     if (result != PARSER_OK)
     {
         printf("parse_protocol error: %d\n", result);
-        if (result == PARSER_BUFFER_TO_SHORT)
+        if (result == PARSER_BUFFER_TOO_SHORT)
             printf("  -> BUFFER_TO_SHORT\n");
         if (result == PARSER_CRC_FAIL)
             printf("  -> CRC_FAIL\n");
