@@ -11,7 +11,7 @@
 
 - `StatSample_t`： sample（value, machine_id, timestamp_sec）。
 - `StatAccumulator_t`：accumulate state（count, mean, M2）。
-- `StatResult_t`：計算後結果（count, mean, stddev, z_score, status）。
+- `StatResult_t`：calculate result（count, mean, stddev, z_score, status）。
 
 ## 3. Public API
 

@@ -49,9 +49,9 @@ int stats_compute(const StatAccumulator_t *acc, double last_value, StatResult_t 
 
     double n = (double)acc->count;
     double mean = (acc->sum / n);
-    double mean_sq = (acc->sum_square / n);   // E[x^2]
-    double var_pop = mean_sq - (mean * mean); // variance
-    double var_sample = var_pop * n / (n - 1.0);
+    double mean_sq = (acc->sum_square / n);      // E[x^2]
+    double var_pop = mean_sq - (mean * mean);    // variance
+    double var_sample = var_pop * n / (n - 1.0); // sample
     double sstddev = sqrt(var_sample);
     double z_value = 0;
     if (sstddev == 0.0)
@@ -60,7 +60,7 @@ int stats_compute(const StatAccumulator_t *acc, double last_value, StatResult_t 
     }
     else
     {
-        z_value = (last_value - mean) / (sstddev);
+        z_value = (last_value - mean) / ((sstddev) / sqrt(n));
     }
 
     out->mean = mean;

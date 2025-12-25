@@ -36,6 +36,7 @@ typedef enum
 typedef struct ParsedData // intergration Data_sturct
 
 {
+    bool is_bad;
     uint8_t sensor_type;
     uint16_t package_version;
     uint16_t seq_no;

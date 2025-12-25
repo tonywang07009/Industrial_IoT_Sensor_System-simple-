@@ -8,7 +8,6 @@ bool protocol_crc_validate(const uint8_t *packet, size_t len)
     else
     {
         uint16_t received_crc = ((uint16_t)packet[len - 2] << 8) | packet[len - 1];
-        // crc check 碼
         uint16_t calc_crc = protocol_crc16(packet, (len - 2));
         // the crc check code comparse.
         if (calc_crc == received_crc)
@@ -21,18 +20,16 @@ bool protocol_crc_validate(const uint8_t *packet, size_t len)
         }
     }
 }
-// static const uint16_t crc16_table[256] = {
-
-// }
 
 uint16_t protocol_crc16(const uint8_t *data, size_t len)
 {
-    uint16_t crc = 0XFFFF; // 工業標準初始值
+    uint16_t crc = 0XFFFF; // setting check basic
 
     for (size_t i = 0; i < len; i++)
     {
+        /*step1 the data initlization */
         crc ^= (uint16_t)data[i] << 8; // 高位元先
-        // 先對crc 第一步進行初始化 1111111101111111
+        // 1111111101111111
         for (int j = 0; j < 8; j++)
         {
             if (crc & 0x8000)
@@ -48,5 +45,3 @@ uint16_t protocol_crc16(const uint8_t *data, size_t len)
 
     return crc;
 }
-
-

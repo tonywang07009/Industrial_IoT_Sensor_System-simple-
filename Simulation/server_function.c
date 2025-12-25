@@ -45,7 +45,8 @@ int run_single_process_server(int listen_fd)
             }
             printf("✅ The parser sussful.\n");
             protocol_print_packet(&data);
-            uint32_t id = data.machine_id;
+            int id = (int)data.machine_id;
+
             if (id < MAX_MEACHINES)
             {
                 StatSample_t s = {                                        // 用法研究

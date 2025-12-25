@@ -10,6 +10,7 @@ typedef enum Sensortype
     SENSOR_TYPE_VIBRATION = 0X01, // vibration
     SENSOR_TYPE_CURRENT = 0X02,   // current
     SENSOR_TYPE_ENV = 0X03,       // envinorment
+    SENSOR_TYPE_MAX = 0X04
 
 } Sensortype_t; // union code // The member specify number is can change enum role.
 

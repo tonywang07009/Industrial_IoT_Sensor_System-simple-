@@ -7,36 +7,27 @@ int net_connect(const char *ip, uint16_t port, net_socket_t *out_sock)
         return -1;
     }
 
+    /*step 1 create the socket*/
     net_socket_t sock = socket(AF_INET, SOCK_STREAM, 0);
 
-#if defined(_WIN32) || defined(_WIN64)
-
-    if (sock == INVALID_SOCKET)
-    {
-        return -1;
-    }
-#else
     if (sock < 0)
     {
         return -1;
     }
-#endif
-
     struct sockaddr_in addr;
-
     memset(&addr, 0, sizeof(addr));
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = inet_addr(ip);
+    addr.sin_addr.s_addr = inet_addr(ip); // The ipv4 transforemr to computer
 
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    // sockaddr is defalut data
     //  struct sockaddr * to transformer to sockaddr datatype -> network
     {
         net_close(sock);
         return -1;
     }
+
     *out_sock = sock; // writtent the sock address
     return 0;
 }
@@ -53,10 +44,10 @@ int proto_send_packet(net_socket_t sock, const Packet_t *package) // client_send
     Packet_t temp;
     int AES_result = 0;
 
-    memcpy(&temp, package, sizeof(Packet_t));
+    memcpy(&temp, package, sizeof(Packet_t)); // The duplication package to temp space
 
     /* body do the AES unlock*/
-    uint8_t *body_ptr = (uint8_t *)&temp.body; // 指到 bodyptr的門牌
+    uint8_t *body_ptr = (uint8_t *)&temp.body;
     const uint8_t *AES_key = security_get_key();
 
     temp.header.body_len = sizeof(temp.body);
@@ -73,12 +64,12 @@ int proto_send_packet(net_socket_t sock, const Packet_t *package) // client_send
     {
         return -1; // return nagative -1
     }
-    // need node for AES
-    /* The CRC implement*/
+
+    /*  step 3 the CRC implement*/
     uint16_t crc = protocol_crc16((const uint8_t *)&temp, (sizeof(Packet_t) - sizeof(uint16_t)));
     temp.checksum = htons(crc); // this need note
 
-    /*Send the package*/
+    /* step  4 Send the package*/
     const uint8_t *buf = (const uint8_t *)&temp;
     size_t to_send = sizeof(Packet_t);
 
@@ -101,36 +92,31 @@ int proto_send_packet(net_socket_t sock, const Packet_t *package) // client_send
 int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms) // The server recive package do it
 {
     printf("recv side sizeof(Packet_t) = %zu\n", sizeof(Packet_t));
+    //% zu find
 
-    if (!output) // don't gave the menery space expect handle.
+    if (!output)
     {
         return -1;
     }
 
     // compaer the time uint swtich
     // this will create the compaer header
-#if defined(_WIN32) || defined(_WIN64)
-    DWORD tv = (DWORD)timeout_ms;
-    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
 
-#else
+    /*step 1 setting the time*/
 
     struct timeval tv;
     tv.tv_sec = timeout_ms / 1000;
     tv.tv_usec = (timeout_ms % 1000) * 1000;
     setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
-#endif
-
-    /*create the queue space*/
+    /*step 2 create the queue space*/
     uint8_t buf[sizeof(Packet_t)];
     size_t need = sizeof(Packet_t);
     uint8_t *buf_ptr = buf;
 
-    while (need > 0) // The space over menory
+    while (need > 0)
     {
-        ssize_t recv_var = recv(sock, (char *)buf_ptr, (int)need, 0); //  ssize_t -> long long size_t 32bit
-                                                                      //  size_t -> unsigned char
+        ssize_t recv_var = recv(sock, (char *)buf_ptr, (int)need, 0); //  ssize_t -> long long size_t 32bit                                                  //  size_t -> unsigned char
         if (recv_var <= 0)
         {
             return -1;
@@ -140,7 +126,7 @@ int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms
         need -= (size_t)recv_var; // The data type alignment
     }
 
-    /*The CRC check vaildation*/
+    /*step 3 The CRC check vaildation*/
     Packet_t *packt = (Packet_t *)buf; // buffer data transformer
     const uint8_t *AES_key = security_get_key();
 
@@ -151,20 +137,20 @@ int proto_recv_and_parse(net_socket_t sock, ParsedData_t *output, int timeout_ms
         return -1;
     }
 
-    /*The AES decode body*/
-    size_t body_len = packt->header.body_len;    // 這邊就是要解密 body
+    /*step 4 The AES decode body*/
+
+    size_t body_len = packt->header.body_len;
     uint8_t *body_ptr = (uint8_t *)&packt->body; // The uint8_t * is used for pointer content
                                                  //  The nomraize is used (uint8_t) can do
 
     int aes_decrypt_result = aes_decrypt(body_ptr, body_ptr, body_len, AES_key, packt->header.aes_iv); // The decrypt;
-
     if (aes_decrypt_result != 0)
     {
         printf("AES decrypt fail \n");
         return -1;
     }
 
-    /* The parser handle process sock*/
+    /* step 5 The parser handle process sock*/
     ParserResult_t result = parse_protocol(buf, sizeof(Packet_t), output);
     if (result != PARSER_OK)
     {
@@ -189,6 +175,19 @@ clinet
 
 server
     CRC inspection -> decode AES
+*/
 
+/*
+    struct timeval tv;
+    // The time sturct that can include the sec and minsec
+    tv.tv_sec = timeout_ms / 1000;
+    tv.tv_usec = (timeout_ms % 1000) * 1000;
+
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    // That is setting the socket attribute function
+    // SOL_SOCKET = 設定要對SOCKET 操作的 保留字
+
+    //  SO_RCVTIMEO: SOCKET 接收加上時間限制, 若等待時間過長,則回傳錯誤訊息
+        預防BLOCK
 
 */
