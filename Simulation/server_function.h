@@ -29,7 +29,6 @@ typedef struct Share_memory
 // The ipc shared memory struct
 static ServerSharedStats_t* g_stats; // The shared memory pointer
 int run_single_process_server(int listen_fd);
-void debug_dump_body_hex(const Packet_t *pkt);
 void server_set_shared_stats(ServerSharedStats_t *p);
 
 #endif

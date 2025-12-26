@@ -97,16 +97,3 @@ int run_single_process_server(int listen_fd)
     close(client_sock);
     return 0;
 }
-
-void debug_dump_body_hex(const Packet_t *pkt)
-{
-    const uint8_t *p = (const uint8_t *)&pkt->body;
-    printf("Body raw bytes (hex):");
-    for (size_t i = 0; i < sizeof(pkt->body); ++i)
-    {
-        if (i % 16 == 0)
-            printf("\n  ");
-        printf("%02X ", p[i]);
-    }
-    printf("\n");
-}
