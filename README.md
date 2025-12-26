@@ -71,14 +71,6 @@ It recommends machine adjustments to optimize utilization rates and balance Takt
 - Environment payload (`Payload_Env_t`):
   - Units: temperature in 0.01 °C, humidity in 0.01 %RH, light in Lux
 
-### 3.3 Package Content 
-
-
-
-
-
-    -
-
 
 ### The Security_AES setting
 
