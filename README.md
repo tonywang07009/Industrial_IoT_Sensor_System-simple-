@@ -1,4 +1,5 @@
-<img width="549" height="196" alt="image" src="https://github.com/user-attachments/assets/61176b9b-154e-42ca-81ac-ab37630b1de6" /># Industrial_IoT_Sensor_System-simple (Simple Version)
+<img width="549" height="196" alt="image" src="https://github.com/user-attachments/assets/61176b9b-154e-42ca-81ac-ab37630b1de6" />
+# Industrial_IoT_Sensor_System-simple (Simple Version)
 
 ## Introduction
 - This project simulates a factory's digital transformation using IoT sensors and a statistical analysis DLL. 
