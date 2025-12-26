@@ -1,11 +1,15 @@
-# Industrial_IoT_Sensor_System-simple (Simple Version)
+<img width="549" height="196" alt="image" src="https://github.com/user-attachments/assets/61176b9b-154e-42ca-81ac-ab37630b1de6" /># Industrial_IoT_Sensor_System-simple (Simple Version)
 
 ## Introduction
 - This project simulates a factory's digital transformation using IoT sensors and a statistical analysis DLL. 
 By identifying bottlenecks with low availability or long cycle times, the system applies Industrial Engineering Line Balancing techniques. 
 It recommends machine adjustments to optimize utilization rates and balance Takt time effectively.
 
-
+### The member contribute 
+| name           | student_id |                         work content                    | contribute % |           
+|----------------|----------  |---------------------------------------------------------|--------------|
+| 王界棠          | 114C73032  | Server architecture design , simluation function design |      50      |
+| 蕭百淳          | 114C75024  | AES design , The ppt design , code quality check        |      50      |
 
 ## 1. Overview
 - Purpose: monitor machine vibration, current, and environment, and apply SPC to detect abnormal states.
