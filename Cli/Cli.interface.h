@@ -9,16 +9,12 @@
 
 typedef struct Cli_interface
 {
-    struct type1
-    {
-        char ip;
-        int  port;
-    }Type1;
+
+    char ip;
+    int  port;
     
     struct type2
     {
-        char ip;
-        int  port;
         int  meachine_id;
         int  package_send_count;
         int* is_bad_count;

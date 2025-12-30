@@ -2,11 +2,11 @@
 
 int main(void)
 {
-
+    Cli_information config;
     while (1)
     {
         int choose = 0;
-        Cli_information config;
+     
 
         printf("Please choose The function: ");
         scanf("%d",&choose);
@@ -20,13 +20,13 @@ int main(void)
 
         case 1: // The setting ip and port 
             printf("Setting the IP");
-            scanf ("%c",&config.Type1.ip);
+            scanf ("%c",&config.ip);
             printf("\n Setting the Port");
-            scanf("%d",&config.Type1.port);
+            scanf("%d",&config.port);
 
-            if(config.Type1.ip != NULL && config.Type1.port !=NULL)
+            if(config.ip != NULL && config.port !=NULL)
             {
-                printf("your setting :\n ip: %c \n Port: %d",config.Type1.ip,config.Type1.port);
+                printf("your setting :\n ip: %c \n Port: %d",config.ip,config.port);
             }
             else
             {
@@ -36,13 +36,18 @@ int main(void)
             continue;
 
         case 2: // The open client
-            if(config.Type1.ip == NULL && config.Type1.port ==NULL)
+            if(config.ip == NULL && config.port ==NULL)
             {
                 printf("you need seeting the ip and port first \n");
                 continue;
             }
+            printf("Setting the send package amount:");
+            scanf("%d",config.Type2.package_send_count); 
+            run_single_client_session(&config.ip,config.port,config.Type2.meachine_id,config.Type2.package_send_count,&config.Type2.is_bad_count);
+        
+        case 3: // The open the server 
             
-            run_single_client_session(&config.Type1.ip,config.Type1.port,)
+            run_single_process_server()
             
         default:
         
