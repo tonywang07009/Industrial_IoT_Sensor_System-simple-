@@ -21,10 +21,11 @@ typedef struct ClientArg
     uint32_t machine_id;
     int send_count;
     int bad_count;
+    double bad_probilty;
 
 } ClientArg_t;
 
 void *client_thread_function(void *arg);
-int run_single_client_session(const char *ip, uint16_t port, uint32_t machine_id, int send_count, int *is_bad_count);
+int run_single_client_session(const char *ip, uint16_t port, uint32_t machine_id, int send_count, int *is_bad_count, double bad_probilty);
 
 #endif

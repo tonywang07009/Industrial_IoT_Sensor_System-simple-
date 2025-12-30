@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "./tiny-AES-c/aes.h"
+#include "./tiny-AES-c/tiny-AES-c/aes.h"
 // tiny-AES-c (AES-128/192/256) [web:167]
 
 /**

@@ -1,6 +1,13 @@
 #include "client_function.h"
 
-int run_single_client_session(const char *ip, uint16_t port, uint32_t machine_id, int send_count, int *is_bad_count)
+void *client_thread_function(void *arg) // The  thread_func implementation
+{
+    ClientArg_t *client_arg = (ClientArg_t *)arg;
+    run_single_client_session(client_arg->ip, client_arg->port, client_arg->machine_id, client_arg->send_count, &client_arg->bad_count, client_arg->bad_probilty);
+    return NULL;
+}
+
+int run_single_client_session(const char *ip, uint16_t port, uint32_t machine_id, int send_count, int *is_bad_count, double bad_probilty)
 {
     net_socket_t sock;
 
@@ -14,7 +21,6 @@ int run_single_client_session(const char *ip, uint16_t port, uint32_t machine_id
     Packet_t pkt;
 
     int bad_count = 0;
-    double bad_probilty = 0.2;
 
     for (int i = 0; i < send_count; i++)
     {
