@@ -6,6 +6,8 @@ CFLAGS = -Wall -Wextra -std=c11 -O3 -I../Data_sturct
 SECURITY_SRC = ../Security_AES/AES.c \
 				../Security_AES/tiny-AES-c/tiny-AES-c/aes.c
 
+LOG_SRC= ../Log/log.c
+
 STATISTICS_SRC = ../Statistics_tool/statistics.c
 
 SIMULATION_SRC = ../Simulation/Radom/random_fill_parameters.c
@@ -20,13 +22,14 @@ COMMON_SRC = \
 
 # The So commin the define need check
 SECURITY_OBJ = $(SECURITY_SRC:.c=.o)
+LOG_OBJ = $(LOG_SRC:.c=.o)
 SIMULATION_OBJ = $(SIMULATION_SRC:.c=.o)
 STATISTICS_OBJ = $(STATISTICS_SRC:.c=.o)
 COMMON_OBJ = $(COMMON_SRC:.c=.o)
 
 #The OBJ combine
 
-ALL_COMMON_OBJ = $(SECURITY_OBJ) $(COMMON_OBJ) $(STATISTICS_OBJ) $(SIMULATION_OBJ)
+ALL_COMMON_OBJ = $(SECURITY_OBJ) $(COMMON_OBJ) $(STATISTICS_OBJ) $(SIMULATION_OBJ) $(LOG_OBJ)
 
 
 # Individual programs

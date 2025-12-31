@@ -8,11 +8,15 @@ int main(void)
         return 1;
     }
     Cli_information config = {0}; // init for typesturct
-
-    while (1)
+    int running = 1;
+    while (running == 1)
     {
-        printf("=== Wellcome to the Simple Iot simluation system ~~ === \n");
         int choose = 0;
+        int server_result = 0;
+        int client_result = 0;
+
+
+        printf("=== Wellcome to the Simple Iot simluation system ~~ === \n");
         printf(" 1): setting ip & port \n 2): open the server simluation \n 3): open the client simluation \n ");
         printf("4): Display static parmerter & need check meachine \n )5: Display production line blance.\n");
         printf("0): exit\n");
@@ -22,19 +26,22 @@ int main(void)
         switch (choose)
         {
         case 0:
+        {
             printf("bye \n");
-            break; // break the cli
+            running = 0;
             break;
-
-        case 1: // The setting ip and port
-            printf("Setting the IP");
+        }
+        case 1:
+        { // The setting ip and port
+            printf("Setting the IP: ");
             scanf("%19s", config.ip);
-            printf("\n Setting the Port");
+            printf("\n Setting the Port: ");
             scanf("%d", &config.port);
+            printf("\n");
             // The ip need count the strlen , because that's is char
             if (strlen(config.ip) > 0 && config.port > 0)
             {
-                printf("your setting :\n ip: %s \n Port: %d", config.ip, config.port);
+                printf("your setting :\n ip: %s \n Port: %d \n", config.ip, config.port);
             }
             else
             {
@@ -42,12 +49,47 @@ int main(void)
                 continue;
             }
             continue;
-
+        }
         case 2: // The open the server
+        {
+            pid_t pid = fork();
+            printf("you choose the open server \n");
+            if (strlen(config.ip) > 0 && config.port > 0)
+            {
+                printf("your setting :\n ip: %s \n Port: %d\n", config.ip, config.port);
+                printf("your child process will create %d\n", child_process_count);
+            }
+            else
+            {
+                printf("you need seeting the ip and port first \n");
+                continue;
+            }
+
+             // create the background process.
+            if (pid <0)
+            {
+                perror("fork");
+            }
+            else if(pid==0)
+            { 
+                server_result = run_server_process(&config);
+                if (server_result !=0)
+                {
+                    printf("The server create fail\n");
+                    _exit(1);
+                }
+                _exit(0);
+            }
+            else
+            {
+                printf("Server started in background, pid=%d\n", pid);
+            }
 
             break;
-
+        }
         case 3: // The open the client
+        {
+            printf("you choose the open client \n");
 
             if (strlen(config.ip) > 0 && config.port > 0)
             {
@@ -63,16 +105,26 @@ int main(void)
 
             printf("Setting the send the package count setting: ");
             scanf("%d", &config.send_package_count_setting);
+
             printf("\n");
             printf("Setting the send the thread_count_setting: ");
             scanf("%d", &config.thread_count_setting);
+
             printf("\n");
             printf("Setting the send the bad_probability (ex: 0.2): ");
+
             scanf("%lf", &config.bad_probability); // lf : double scanf format
             printf("\n");
 
-            run_multi_client_sessions(&config);
+            client_result = run_multi_client_sessions(&config);
+            
+            if (client_result != 0)
+            {
+                printf ("The muilti client session create fail \n ");
+            }
+            
             break;
+        }
         case 4: // Display static parmerter & need check meachine
 
         case 5: // Display production line blance. (systemlog .so)
@@ -89,6 +141,11 @@ int main(void)
     }
     net_cleanup(); // clear the net content in final
 }
+
+
+/*This is will include the simluation function
+  Make file will change. 
+*/
 
 int run_multi_client_sessions(const Cli_information *config)
 {
@@ -146,4 +203,133 @@ int run_multi_client_sessions(const Cli_information *config)
         printf("No bad packages");
     }
     return 0;
+}
+
+int run_server_process(const Cli_information* cfg)
+{
+    int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666); //need research point
+
+    if(shm_fd <0)
+    {
+        perror("shm_open");
+        return 1;
+    }
+
+    if (ftruncate(shm_fd, sizeof(ServerSharedStats_t)) < 0) 
+    {
+    perror("ftruncate");
+    return 1;
+    }
+
+    ServerSharedStats_t* shm_stats = mmap(NULL,
+            sizeof(ServerSharedStats_t),
+            PROT_READ | PROT_WRITE,
+            MAP_SHARED,
+            shm_fd, 0
+        );
+    
+    if (shm_stats == MAP_FAILED)
+    {
+        perror("mmap");
+        return 1;
+    }
+
+    shm_stats->total_requests =0;
+
+    for (int i = 0; i < MAX_MEACHINES; i++)
+    {
+        stats_reset(&vib_stats[i]);
+    }
+
+    net_socket_t server_sock = socket(AF_INET, SOCK_STREAM, 0);
+    // The socket anncount
+
+    if (server_sock ==-1) //The linux
+    {
+        perror("server_socket");
+        return 1;
+    }
+
+    int sock_opt = 1; // need observer data type
+                      // The most soket API data type is int
+
+    setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&sock_opt, sizeof(sock_opt));
+    // SOL_SOCKET, SO_REUSEADDR, -> relize
+    // (const char *) data_type transformer
+    // This need deep know // Unix programming
+
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY; // bind local computer all ip
+    addr.sin_port = htons(cfg->port);
+
+    if (bind(server_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+    {
+        perror("bind");
+        return 1;
+    }
+
+    if (listen(server_sock, 500) < 0)
+    {
+        perror("listen");
+        return 1;
+    }
+
+    printf("Parent: listen on %d, forking workers... \n", cfg->port); // The listen port dispaly.
+    syslog_info(LOG_EVENT_SERVER_START,cfg->port,0,"workers=%d",child_process_count);
+    // LOG_EVENT_SERVER_START : like 2025-12-31 19:12:00 [SERVER_START] port=8080 is_bad=0 workers=32
+
+    shm_stats->total_requests = 0;
+    
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+    pthread_mutex_init(&shm_stats->lock, &attr);
+    pthread_mutexattr_destroy(&attr);
+    server_set_shared_stats(shm_stats);
+
+    for (int i = 0; i < child_process_count; ++i)
+    {
+        pid_t pid = fork();
+        if (pid < 0)
+        {
+            perror("fork");
+            return 1;
+        }
+        else if (pid == 0)
+        {
+            // Child process
+            printf("Child %d:(pid =%d) started,\n",i, getpid());
+            run_single_process_server(server_sock);
+
+            _exit(0); // the child process exit
+        }
+    }
+    for(int i = 0 ; i < child_process_count ; i++)
+    {
+        wait(NULL); // The parent process wait child process finshed
+                    // prevent the zombie process.
+    }
+    // printf("Total requests handled by all workers: %llu\n",
+    //    (unsigned long long)shm_stats->total_requests);
+    
+    syslog_info(LOG_EVENT_SERVER_START,
+                cfg->port,
+                0,
+                "workers=%d",
+                child_process_count);
+
+    syslog_info(LOG_EVENT_SERVER_START,
+                cfg->port,0,
+                "total_requests=%llu",
+                shm_stats->total_requests);
+    // llu -> long long unsigned 64bit
+    /*Research point*/
+    munmap(shm_stats, sizeof(ServerSharedStats_t));
+    close(shm_fd);
+    shm_unlink(SHM_NAME);
+    close(server_sock); // The server socket close
+    return 0;
+
 }

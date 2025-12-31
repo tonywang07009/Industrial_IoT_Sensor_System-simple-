@@ -1,0 +1,3 @@
+2025-12-31 19:23:17 [SERVER_START] port=8080 is_bad=0 workers=32
+2025-12-31 19:25:57 [SERVER_START] port=8080 is_bad=0 workers=32
+2025-12-31 19:27:05 [SERVER_START] port=8080 is_bad=0 total_requests=960
