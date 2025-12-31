@@ -1,6 +1,9 @@
 #include "statistics.h"
 
 /*The add sample */
+
+
+
 void stats_reset(StatAccumulator_t *acc)
 {
     if (!acc)
@@ -72,6 +75,7 @@ int stats_compute(const StatAccumulator_t *acc, double last_value, StatResult_t 
 
 /*The Display information*/
 
+
 void stats_print_result(uint32_t machine_id, const StatResult_t *result)
 {
     if (!result)
@@ -82,3 +86,6 @@ void stats_print_result(uint32_t machine_id, const StatResult_t *result)
     printf("SPC: MID=%u, N=%u, mean=%.2f, stddev=%.3f, Z=%.2f\n",
            machine_id, result->count, result->mean, result->stddev, result->z_score);
 }
+
+
+/*The Display abnormal (unnomal) meachine id*/

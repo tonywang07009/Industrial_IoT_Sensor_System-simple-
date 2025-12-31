@@ -7,6 +7,8 @@ void server_set_shared_stats(ServerSharedStats_t *p)
 
 int run_single_process_server(int listen_fd)
 {
+    uint32_t bad_ids[MAX_MEACHINES];
+    int bad_count = 0;
 
     net_socket_t client_sock = accept(listen_fd, NULL, NULL);
 
@@ -74,11 +76,11 @@ int run_single_process_server(int listen_fd)
                         {
                             status = "GREEN";
                         }
-                        else if (z_value >= 1.0 && z_value <= 1.645)
+                        else if (z_value <= 1.645)
                         {
                             status = "ORANGE";
                         }
-                        else if (z_value >= 1.645 && z_value <= 1.96)
+                        else if (z_value <= 1.96)
                         {
                             status = "RED";
                         }
@@ -87,10 +89,33 @@ int run_single_process_server(int listen_fd)
                             status = " CRITICAL ";
                         }
 
-                        stats_print_result(id, &static_value);
+                        if(static_value.z_score > 1.645)
+                        {
+                            bad_ids[bad_count++] = id; // store bad
+                            stats_print_result(id, &static_value);
+                        }
+                        // printf("Sample Enough %u, status=%s\n", static_value.count, status);
                     }
                 }
             }
+        }
+    }
+    printf("\n[Need Audit Machines]: ");
+    /*RD*/
+    for(int i = 0 ; i< bad_count;i++)
+    {
+        int already_printed = 0;
+        for (int j = 0 ; j < i ;j++)
+        {
+            if (bad_ids[i] == bad_ids[j]) 
+            {
+                already_printed = 1;
+                break;
+            }
+        }
+        if (!already_printed) 
+        {
+        printf("Bad_machine : %u\n", bad_ids[i]);
         }
     }
 

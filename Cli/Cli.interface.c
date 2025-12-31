@@ -1,5 +1,6 @@
 #include "Cli.interface.h"
 
+
 int main(void)
 {
     if (net_init() != 0) // The clean sock pre call
@@ -18,7 +19,6 @@ int main(void)
 
         printf("=== Wellcome to the Simple Iot simluation system ~~ === \n");
         printf(" 1): setting ip & port \n 2): open the server simluation \n 3): open the client simluation \n ");
-        printf("4): Display static parmerter & need check meachine \n )5: Display production line blance.\n");
         printf("0): exit\n");
         printf("Please choose The function: ");
         scanf("%d", &choose);
@@ -125,18 +125,19 @@ int main(void)
             
             break;
         }
-        case 4: // Display static parmerter & need check meachine
 
-        case 5: // Display production line blance. (systemlog .so)
-
-        case 6: // system log
-
+        case 4: // Display system log
+        {
+            cli_show_system_log();
+        }
         default:
+        {
 
             printf("Unknow choose ! \n");
             continue;
 
             break;
+        }
         }
     }
     net_cleanup(); // clear the net content in final
@@ -331,5 +332,50 @@ int run_server_process(const Cli_information* cfg)
     shm_unlink(SHM_NAME);
     close(server_sock); // The server socket close
     return 0;
+
+}
+static void cli_show_system_log(void)
+{
+    FILE *fp = fopen(LOG_PATH,"r");
+    // The pointer the file dictory
+
+    if(!fp)
+    {
+        printf("Cannot open log file: %s\n", LOG_PATH);
+        return;
+    }
+
+    char* lines [LOG_TAIL_LINES] = {0}; // The init
+    int count = 0;
+
+    char buffer [2048] = {0};
+    while (fgets(buffer,sizeof(buffer),fp)) // The fgets like scrpy function
+    {
+        int idx = count % LOG_TAIL_LINES;
+        if(lines[idx]!=NULL)
+        {
+            free(lines[idx]); // release menory
+        }
+        lines[idx]=strdup(buffer);
+        count++;
+    }
+    fclose(fp);
+
+    int start = (count < LOG_TAIL_LINES) ? 0 : (count % LOG_TAIL_LINES); // RD
+    int n = count < LOG_TAIL_LINES? count:LOG_TAIL_LINES;
+    
+    printf("=== Last %d log lines from %s ===\n", n, LOG_PATH);
+    
+    /*The RD Block*/
+    for (int i = 0; i < n; i++) 
+    {
+        int idx = (start + i) % LOG_TAIL_LINES;
+
+        if (lines[idx]!=NULL) 
+        {
+        printf("%s", lines[idx]);
+        free(lines[idx]);
+        }
+    }
 
 }

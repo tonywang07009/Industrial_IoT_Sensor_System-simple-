@@ -41,10 +41,11 @@ TARGET = cli
 
 all: $(TARGET)
 $(TARGET): $(Cli_INTEFACE_OBJ) $(ALL_COMMON_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ -lm -lpthread
+	$(CC) $(CFLAGS) -o $@ $^ -L/usr/local/lib -lm -lpthread -llog
 # The target need in fornt
 # The windows need add -lws2_32-
 # -lm : is for connect math.h
+# -L/usr/local/lib -> lD_path specify
 clean:
 	rm -rf *.exe *.o
 

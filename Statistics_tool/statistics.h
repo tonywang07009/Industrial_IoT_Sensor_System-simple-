@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>
-
+#define MAX_MEACHINES 500
 /*The data struct*/
 
 typedef struct statistics_sample_information
@@ -32,6 +32,7 @@ typedef struct statistics_result
     double mean;
     double stddev;
     double z_score; // The z-test.
+    char status[12];
 
 } StatResult_t;
 
@@ -48,5 +49,7 @@ void stats_add_sample(StatAccumulator_t *acc, const StatSample_t *sample);
 int stats_compute(const StatAccumulator_t *acc, double last_value, StatResult_t *out);
 /*The statistics result*/
 void stats_print_result(uint32_t machine_id, const StatResult_t *result);
+// void stats_problem_meachine(uint32_t machine_id, const StatResult_t* result);
 
-#endif /*__STATS_H__*/
+#endif 
+/*__STATS_H__*/
