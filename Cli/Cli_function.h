@@ -39,8 +39,8 @@ typedef struct Cli_interface // The for CLI used datasturct
 
 int run_server_process(const Cli_information* cfg);
 int run_multi_client_sessions(const Cli_information *cfg);
-static void cli_show_system_log(void);
-static void cli_show_stats_and_audit(void);
+void cli_show_system_log(void);
+static void cli_show_stats_and_audit(void); //static -> parmeter only inside , isn't go to outside
 
 
 #endif

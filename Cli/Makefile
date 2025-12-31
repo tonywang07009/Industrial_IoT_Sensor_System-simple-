@@ -5,11 +5,8 @@ CFLAGS = -Wall -Wextra -std=c11 -O3 -I../Data_sturct
 # Common 
 SECURITY_SRC = ../Security_AES/AES.c \
 				../Security_AES/tiny-AES-c/tiny-AES-c/aes.c
-
 LOG_SRC= ../Log/log.c
-
 STATISTICS_SRC = ../Statistics_tool/statistics.c
-
 SIMULATION_SRC = ../Simulation/Radom/random_fill_parameters.c
 
 COMMON_SRC = \
@@ -33,7 +30,8 @@ ALL_COMMON_OBJ = $(SECURITY_OBJ) $(COMMON_OBJ) $(STATISTICS_OBJ) $(SIMULATION_OB
 
 
 # Individual programs
-CLI_SRC = Cli.interface.c
+CLI_SRC = Cli.interface.c \
+		  Cli_function.c	
 #Indivual objectfile
 Cli_INTEFACE_OBJ = $(CLI_SRC:.c=.o)
 
