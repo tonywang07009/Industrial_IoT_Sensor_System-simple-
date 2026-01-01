@@ -1,4 +1,4 @@
-<img width="549" height="196" alt="image" src="https://lurl.cc/c49MF" />
+<img width="549" height="196" alt="image" src="https://i.ibb.co/S42Dzt4B/1-u-Ms06-ROBVq0-Q-5xcrc-A.jpg" alt="1-u-Ms06-ROBVq0-Q-5xcrc-A" border="0"/>
 
 
 # Industrial_IoT_Sensor_System-simple (Simple Version)
