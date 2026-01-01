@@ -83,9 +83,33 @@ flowchart TB
   - Units: temperature in 0.01 °C, humidity in 0.01 %RH, light in Lux
 
 
+# Document
+- __[CLI](./Cli/README.md)__
+
+- __[Simulation Module](./Simulation/README.md)__ 
+
+- __[Socket](./Socket/README.md)__
+
+- __[Parser](./Parser/README.md)__
+
+- __[Log](./Log/README.md)__
+
+- __[Security_AES](./Security_AES/README.md)__
+
+- __[Statistics_tool](./Statistics_tool/README.md)__
+
+
+## First_used
+
 ### The Security_AES setting
 
 Step 1 : cd/ Security_AES
 
 Step 2 : git clone https://github.com/kokke/tiny-AES-c.git (tiny-AES-c)
-        
+
+
+### Download The install log
+
+Step 1 : sudo chmod +x install_log.sh
+
+Step 2 : sudo ./install_log.sh

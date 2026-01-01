@@ -2,13 +2,16 @@
 
 int main(void)
 {
-    if (net_init() != 0) // The clean sock pre call
+    /* step 1  system initialization */
+    if (net_init() != 0)
     {
         printf("net_init failed\n");
         return 1;
     }
     Cli_information config = {0}; // init for typesturct
     int running = 1;
+
+    /* step 2 The cli control */
     while (running == 1)
     {
         int choose = 0;
@@ -30,15 +33,15 @@ int main(void)
             running = 0;
             break;
         }
-        case 1:
-        { // The setting ip and port
+        case 1: // The setting ip and port
+        { 
             printf("Setting the IP: ");
             scanf("%19s", config.ip);
             printf("\n Setting the Port: ");
             scanf("%d", &config.port);
             printf("\n");
-            // The ip need count the strlen , because that's is char
-            if (strlen(config.ip) > 0 && config.port > 0)
+    
+            if (strlen(config.ip) > 0 && config.port > 0) // The ip need count the strlen , because that's is char
             {
                 printf("your setting :\n ip: %s \n Port: %d \n", config.ip, config.port);
             }
@@ -63,7 +66,6 @@ int main(void)
                 printf("you need seeting the ip and port first \n");
                 continue;
             }
-
              // create the background process.
             if (pid <0)
             {
@@ -144,8 +146,4 @@ int main(void)
     return 0;
 }
 
-
-/*This is will include the simluation function
-  Make file will change. 
-*/
 

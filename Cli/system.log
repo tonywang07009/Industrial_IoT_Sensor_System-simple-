@@ -17,3 +17,6 @@
 2025-12-31 22:17:03 [SERVER_START] port=9090 is_bad=0 workers=32
 2025-12-31 22:17:31 [SERVER_START] port=9090 is_bad=0 workers=32
 2025-12-31 22:17:31 [SERVER_START] port=9090 is_bad=0 total_requests=19200
+2026-01-01 15:14:30 [SERVER_START] port=9060 is_bad=0 workers=32
+2026-01-01 15:16:02 [SERVER_START] port=9060 is_bad=0 workers=32
+2026-01-01 15:16:02 [SERVER_START] port=9060 is_bad=0 total_requests=9600

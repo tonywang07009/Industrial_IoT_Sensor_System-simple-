@@ -3,10 +3,10 @@
 int run_multi_client_sessions(const Cli_information *config)
 {
 
+    /* step 1 bondary conditon check */
     if (config->thread_count_setting <= 0)
     {
         printf("The thread_count_setting is illegal!!");
-
         return 1;
     }
     else if (config->send_package_count_setting <= 0)
@@ -14,13 +14,15 @@ int run_multi_client_sessions(const Cli_information *config)
         printf("Thesend_package_count_setting is illegal !!");
         return 1;
     }
-    /*define the different process need setting*/
+
+    /*step 2 the array setting form user */
     pthread_t tids[config->thread_count_setting];
     ClientArg_t cfg[config->thread_count_setting];
 
     int bad_count = 0; // This is static the how many bad meachine
     int total_bad = 0;
 
+    /*step 3 use for loop setting indivual thread config*/
     for (int i = 0; i < config->thread_count_setting; i++)
     {
         cfg[i].ip = config->ip;
@@ -32,21 +34,22 @@ int run_multi_client_sessions(const Cli_information *config)
     }
 
     printf("\n");
-    /* The create thread*/
+
+    /* step 4 create thread*/
     for (int i = 0; i < config->thread_count_setting; i++)
     {
         pthread_create(&tids[i], NULL, client_thread_function, &cfg[i]);
         // Research
     }
-    /* join the function setting*/
+
+
+    /* step 5 join the function setting*/
     for (int i = 0; i < config->thread_count_setting; i++)
     {
-        pthread_join(tids[i], NULL);
-        // Research
+        pthread_join(tids[i], NULL);         // Research
         total_bad += cfg[i].bad_count;
         printf("Machine %u bad_count = %d\n", cfg[i].machine_id, cfg[i].bad_count);
     }
-
     if (total_bad != 0)
     {
         printf("Total bad packages = %d\n", total_bad);
@@ -55,26 +58,32 @@ int run_multi_client_sessions(const Cli_information *config)
     {
         printf("No bad packages");
     }
+
+    
     return 0;
 }
 
 
 int run_server_process(const Cli_information* cfg)
 {
+    /*Step 1 create the posix shardd memory object named SHM_NAM */
     int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666); //need research point
-
     if(shm_fd <0)
     {
         perror("shm_open");
         return 1;
     }
 
+    /*ftruncate set the sheare memnory size*/
     if (ftruncate(shm_fd, sizeof(ServerSharedStats_t)) < 0) 
     {
     perror("ftruncate");
     return 1;
     }
 
+    /*step 3 mapping the process to share memnory
+      and then pointer to share memnory*/
+    
     ServerSharedStats_t* shm_stats = mmap(NULL,
             sizeof(ServerSharedStats_t),
             PROT_READ | PROT_WRITE,
@@ -88,11 +97,11 @@ int run_server_process(const Cli_information* cfg)
         return 1;
     }
 
+    /*step 4 init share memnory and  server all config*/
     shm_stats->total_requests =0;
-
     for (int i = 0; i < MAX_MEACHINES; i++)
     {
-        stats_reset(&vib_stats[i]);
+        stats_reset(&vib_stats[i]); // from serve function.h
     }
 
     net_socket_t server_sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -165,9 +174,8 @@ int run_server_process(const Cli_information* cfg)
         wait(NULL); // The parent process wait child process finshed
                     // prevent the zombie process.
     }
-    // printf("Total requests handled by all workers: %llu\n",
-    //    (unsigned long long)shm_stats->total_requests);
-    
+
+
     syslog_info(LOG_EVENT_SERVER_START,
                 cfg->port,
                 0,
@@ -178,7 +186,7 @@ int run_server_process(const Cli_information* cfg)
                 cfg->port,0,
                 "total_requests=%llu",
                 shm_stats->total_requests);
-    // llu -> long long unsigned 64bit
+
     /*Research point*/
     munmap(shm_stats, sizeof(ServerSharedStats_t));
     close(shm_fd);

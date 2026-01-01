@@ -21,6 +21,7 @@ typedef enum Operationtype
     OPCODE_DEVICE_LOGIN = 0X20, // The Equiment sign in the system
     OPCODE_ALARM_EVENT = 0X30,  // The alarm is opening.
     OPCODE_HEARTBEAT = 0X00     // Check your equiment still alvie.
+    
 } OpCode_t;
 
 typedef struct Protocol_Header

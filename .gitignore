@@ -22,6 +22,9 @@
 *.la
 *.lo
 
+#picutre
+*.png
+
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so
