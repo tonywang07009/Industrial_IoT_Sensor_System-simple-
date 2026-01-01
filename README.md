@@ -1,4 +1,6 @@
 <img width="549" height="196" alt="image" src="https://github.com/user-attachments/assets/61176b9b-154e-42ca-81ac-ab37630b1de6" />
+
+
 # Industrial_IoT_Sensor_System-simple (Simple Version)
 
 ## Introduction
@@ -24,25 +26,34 @@ It recommends machine adjustments to optimize utilization rates and balance Takt
 ## 2. The system overview flow chat
 
 ```mermaid
-    sequenceDiagram 
-        participant C as Client  %% 宣告兩個主要功能方塊
-        participant S as Server  
-        participant P as Parser
-        participant SPC as Statistics_tool
-        participant SEC as Security_AES
+%% {init: {"flowchart": {"defaultRenderer": "elk"}} }%%
+%% The specy elk to daraw enegine
+flowchart TB
+    %% --- 上半部：控制層 (維持垂直) ---
+    CLI[__CLI__<br/> 1.Center: specify instruction <br/> 2. opening simluation]
+    SIM[__Simluation__<br/> 1.Simluation The Server <br/> 2. Simuation The client ]
+    CEN[__Client__<br/> 1.Provide the Different sensor data <br/> 2.Use __pthread__ Send The package to server.]
+    SVR[__Server__<br/> 1.Provide the statics result <br/> 2. Use __fork__ to handle multi-clients]
 
-        C->>S: connect()
-        C->>S: send the package_t (Socket)
-        S->>P: proto_recv_and_parsr() (Socket)
-        P->>SEC: verify CRC16 + AES decrypt body %%(Security_AES)
-        %% (crc_16,Security_AES)
 
-        SEC-->>P: status + decrypt body
-        P-->>S: ParsedData_t / status %%(protocol_parser)
+    subgraph Comm_Layer [Communication Layer]
+        SCK(__Socket__<br/> Provide the The commucation)
+        AES(__AES__<br/> encryption & decryption the package body <br/>)
+        PAR(__Parser__ <br/> Provide the package build protocol <br/>)
+        %% 設定水平順序：Client <-> Socket <-> Server
 
-        S->>SPC: stats_add_sample() StatSample_t { value, machine_id, timestamp }
-        SPC-->>S: StatResult_t (Z-score, status) %% This need debug
-          
+        SCK<-->AES
+        SCK<-->PAR
+
+    end
+
+    %% --- 連線關係 ---
+    CLI <--> SIM
+    %% Simulation 分別呼叫 Client 與 Server
+    SIM <--> CEN
+    SIM <--> SVR
+    SVR <--> SCK
+    CEN <--> SCK
 ```
 
 

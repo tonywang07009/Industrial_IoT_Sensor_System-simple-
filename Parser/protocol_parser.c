@@ -26,6 +26,7 @@ ParserResult_t parse_protocol(const uint8_t *input, size_t len, ParsedData_t *ou
     /*3. clear output menmory space*/
     memset(output, 0, sizeof(*output));
 
+    /*3.5 into header*/
     output->machine_id = ntohl(package->header.machine_id); // Big end to transformer small end, notol = 32bit.
     output->timestamp_sec = ntohl(package->header.timestamp_sec);
     output->seq_no = ntohs(package->header.seq_no); // ntohs = 16 bit
