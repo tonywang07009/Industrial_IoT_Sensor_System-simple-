@@ -113,3 +113,6 @@ Step 2 : git clone https://github.com/kokke/tiny-AES-c.git (tiny-AES-c)
 Step 1 : sudo chmod +x install_log.sh
 
 Step 2 : sudo ./install_log.sh
+
+### Linces
+This project is open-source and available under the MIT License.
